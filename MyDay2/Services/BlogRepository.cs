@@ -4,7 +4,7 @@ using MyDay2.Contracts;
 
 namespace MyDay2.Services
 {
-    public class BlogRepository : IBlogRepository, IDisposable
+    public class BlogRepository : IBlogRepository
     {
         AppDbContext _context;
         public BlogRepository(AppDbContext context)
@@ -48,26 +48,6 @@ namespace MyDay2.Services
             _context.Blogs.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-            }
-            disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }
