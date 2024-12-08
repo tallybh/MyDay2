@@ -19,32 +19,6 @@ builder.Services.Configure<UnitOptions>(builder.Configuration.GetSection("Units"
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
-//builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-//                .AddIdentityServerAuthentication(x =>
-//                {
-//                    x.Authority = "http://localhost:5000"; //idp address
-//                    x.RequireHttpsMetadata = false;
-//                    x.ApiName = "api2"; //api name
-//                });
-
-
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-//{
-//    options.Audience = builder.Configuration["Jwt:Audience"];
-//    options.Authority = builder.Configuration["Jwt:Issuer"];
-//    options.RequireHttpsMetadata = false;
-//    options.SaveToken = true;
-//    options.IncludeErrorDetails = true;
-//    options.TokenValidationParameters = new TokenValidationParameters()
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidAudience = builder.Configuration["Jwt:Audience"],
-//        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-//    };
-//    options.UseSecurityTokenValidators = true;
-//});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
