@@ -33,34 +33,36 @@ namespace MyDay2.Controllers
         }
 
         // POST api/<UsersController>
-        [HttpPost]
-        public async Task<IActionResult> Login(string userName, string password)
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] UserModel user)
         {
-            if (userName == null || password == null)
+            if (user != null && user.Name !=null && user.Password !=null)
             {
-                return BadRequest();
+                var token = GenerateJwtToken(user.Name);
+                return Ok(new { token });
             }
+            return Unauthorized();
+        }
 
-            var claims = new[] {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("UserId", "1"),
-                        new Claim("DisplayName", "Tally"),
-                        new Claim("UserName", "tallyUser"),
-                        new Claim("Email", "Email")
-                    };
+        private string GenerateJwtToken(string username)
+        {
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, username),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            
             var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddMinutes(10),
-                signingCredentials: signIn);
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
 
-            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         // PUT api/<UsersController>/5

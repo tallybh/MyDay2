@@ -13,6 +13,7 @@ namespace MyDay2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ProductsController : ControllerBase
 {
     private readonly IProductMock productMock;
@@ -25,7 +26,7 @@ public class ProductsController : ControllerBase
     // GET: api/<ProductsController>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [Authorize]
+ 
     public async Task<ActionResult<IEnumerable<Product>>> Get()
     {
         return Ok(appDbContext.Products);
